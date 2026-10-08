@@ -1,3 +1,16 @@
+#This assures that junk files and large data sets are not accidentally uploaded to the Github
+
+#file path and file endings to ignore for EEG data
 data/
 *.edf
+*.bdf
 *.fif
+
+#MacOS specific files to ignore 
+.DS_Store
+
+
+# Python cache & environment files to avoid uploading
+__pycache__/
+*.py[cod]
+.venv/
