@@ -1,0 +1,41 @@
+Title:
+
+Participants:
+The dataset includes EEG data from 30 healthy adult participants (14 males, 16 females). Participants were aged between 19 and 27 years. All participants gave informed consent and were free from neurological disorders.
+
+
+Paradigm:
+The EEG data was recorded during a single paradigm consisting of three phases, each lasting 1 minute:
+1. A 1-minute **resting state** measurement, where participants were instructed to remain still and relaxed.
+2. A 1-minute **task performance** phase, where participants were asked to perform specific movements, including jaw movement and head turning.
+3. A final 1-minute **resting state** measurement, similar to the first phase, where participants remained still and relaxed.
+
+These three phases (rest, task performance, rest) together form the full experimental paradigm.
+
+File organization:
+The raw EEG data files are located in the "sourcedata" folder, and preprocessed data is stored in the "derivatives" folder. Each participant’s data is stored in a separate sub-folder named by their participant ID (e.g., sub-01). Event information for each condition (EB, BT, MVO, MVC) is included in the corresponding .mat files, which are stored in the "derivatives" folder.
+
+
+Data use:
+This dataset is made available under the CC-BY-4.0 license, which allows users to freely use, share, and modify the data, including for commercial purposes. Proper attribution must be given to the authors when using or publishing any results derived from this dataset. Any modified versions of the dataset must also be shared under the same CC-BY-4.0 license.
+
+
+Event Information:
+The EEG data includes four experimental conditions: EB, BT, MVO, and MVC. The event information for each condition is stored in the 'EB.event', 'BT.event', 'MVO.event', and 'MVC.event' structures within each 'sub-XX_acq-BLP-eeg.mat' file in the derivatives folder. Each condition contains the following event-related information:
+
+1. *edftype**: Event type identifier (values 1-5):
+   - 1: Experiment Start
+   - 2: Task Start
+   - 3: Task Performing Beep
+   - 4: Task End
+   - 5: Experiment End
+
+2. **latency**: Time (in seconds) relative to the start of the recording when the event occurred.
+
+Each condition's event information is contained in the respective structure (e.g., 'EB.event', 'BT.event', 'MVO.event', 'MVC.event') within the corresponding .mat file.
+
+Please refer to the 'sub-XX_acq-BLP-eeg.mat' files in the 'derivatives' folder for detailed event data for each condition.
+
+
+Contact:
+- Corresponding autohr: Minkyu Ahn(minkyuahn@handong.edu)

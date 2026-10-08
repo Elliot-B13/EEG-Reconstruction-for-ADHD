@@ -1,0 +1,25 @@
+{
+    "Name": "Consumer-grade EEG device evaluation",
+    "BIDSVersion": "1.8.0",
+    "License": "CC-BY-4.0",
+    "Authors": ["Yeeun Lee", "Minkyu Ahn"],
+    "DatasetType": "raw",
+    "Description": "This dataset includes EEG data for multiple experimental conditions (EB, BT, MVO, MVC). Each condition contains event-related information (onset, duration, event type, and latency) in the corresponding .mat files located in the derivatives folder.",
+    "Events": {
+      "Description": "The events for each condition (EB, BT, MVO, MVC) are stored in separate structures within the .mat files (e.g., 'EB.event', 'BT.event', 'MVO.event', 'MVC.event'). Each structure contains the following fields: 'edftype' (event type), 'latency' (event onset time in seconds), and 'srate' (sampling rate).",
+      "Event Types": {
+        "1": "Experiment Start",
+        "2": "Task Start",
+        "3": "Task Performing Beep",
+        "4": "Task End",
+        "5": "Experiment End"
+      },
+      "Structure": {
+        "edftype": "Event type identifier (1-5)",
+        "latency": "Latency of the event in seconds (relative to the start of the recording)"
+      },
+      "Location": "The .mat files for each subject (e.g., 'sub-01_acq-BLP-eeg.mat') contain event information for each condition (EB, BT, MVO, MVC) in the respective 'EB.event', 'BT.event', 'MVO.event', and 'MVC.event' structures."
+    }
+    
+  }
+  
