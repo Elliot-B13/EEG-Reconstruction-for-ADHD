@@ -146,7 +146,7 @@ def parse_args() -> argparse.Namespace:
     )
     return parser.parse_args()
 
-
+# safety step that standardizes names in case EDF recordings label them diff
 def canonical_channel_name(name: str) -> str:
     """Convert common EDF channel-label variants to canonical 10-20 names."""
     cleaned = name.strip()
@@ -159,7 +159,7 @@ def canonical_channel_name(name: str) -> str:
     canonical = case_lookup.get(cleaned.casefold(), cleaned)
     return CHANNEL_ALIASES.get(canonical.upper(), canonical)
 
-
+# matches standardized channels and checks for duplicates (creates error msg)
 def channel_lookup(channel_names: Sequence[str]) -> dict[str, str]:
     """Map canonical channel names to the actual labels present in one EDF."""
     lookup: dict[str, str] = {}
@@ -176,7 +176,7 @@ def channel_lookup(channel_names: Sequence[str]) -> dict[str, str]:
         raise ValueError(f"Ambiguous duplicate channel labels after cleanup: {duplicates}")
     return lookup
 
-
+# defines wanted channels and checks if they're actually there
 def resolve_channels(
     lookup: dict[str, str],
     requested: Iterable[str],
@@ -191,7 +191,7 @@ def resolve_channels(
         )
     return [lookup[name] for name in canonical_requested]
 
-
+# extracts participant ID from eeg file path or file name
 def extract_subject(path: Path) -> str:
     for part in reversed(path.parts):
         if re.fullmatch(r"sub-[A-Za-z0-9]+", part):
@@ -199,12 +199,13 @@ def extract_subject(path: Path) -> str:
     match = re.search(r"sub-[A-Za-z0-9]+", path.name)
     return match.group(0) if match else "unknown"
 
-
+# extracts eeg task from file name
 def extract_task(path: Path) -> str:
     match = re.search(r"task-([A-Za-z0-9]+)", path.name)
     return match.group(1) if match else "unknown"
 
-
+# prepares a continuous EEG recording by selecting valid scalp channels
+# standardizes channel info, filters to 0.5-45 Hz, ensures consistent sampling rate for later windowing
 def read_and_prepare_raw(path: Path, args: argparse.Namespace) -> tuple[mne.io.BaseRaw, list[str]]:
     """Read, optionally rereference, select scalp channels, filter, and resample."""
     raw = mne.io.read_raw_edf(path, preload=True, verbose="ERROR")
@@ -282,7 +283,8 @@ def read_and_prepare_raw(path: Path, args: argparse.Namespace) -> tuple[mne.io.B
 
     return raw, requested_inputs
 
-
+# splits continuous eeg into aligned time windows, removes invalid windows
+# creates matching segments of dsi7 and dsi24
 def make_windows(
     raw: mne.io.BaseRaw,
     input_channel_names: Sequence[str],
@@ -344,7 +346,7 @@ def make_windows(
         "target_channel_names": np.asarray(target_channel_names),
     }
 
-
+# saves processed eeg arrays as npz file
 def atomic_savez(path: Path, **arrays: object) -> None:
     """Write one NPZ completely before replacing its final path."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -352,7 +354,7 @@ def atomic_savez(path: Path, **arrays: object) -> None:
     np.savez_compressed(temporary, **arrays)
     os.replace(temporary, path)
 
-
+# creates matching output paths between dsi7 and dsi24
 def output_paths(
     source: Path,
     input_root: Path,
@@ -362,7 +364,7 @@ def output_paths(
     relative = source.relative_to(input_root).with_suffix(".npz")
     return dsi24_root / relative, dsi7_root / relative, relative
 
-
+# orchestrator of all the smaller functions from before
 def process_recording(
     source: Path,
     args: argparse.Namespace,
