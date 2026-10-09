@@ -69,7 +69,8 @@ CHANNEL_ALIASES = {
     "T6": "P8",
 }
 
-
+# collects adjustable settings for preprocessing pipeline and puts in 1 place
+# so can adjust settings without going in and changing the code
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-root", type=Path, required=True)
