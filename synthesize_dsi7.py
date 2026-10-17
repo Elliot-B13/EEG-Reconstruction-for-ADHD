@@ -8,24 +8,36 @@ from pathlib import Path
 import mne
 
 
+#This identifies the Channels we want to synthesize from the DSI-24 data
+#This also creates the input and output path
+
 DSI7_CHANNELS = ("F3", "F4", "C3", "C4", "P3", "P4", "FZ")
 DEFAULT_INPUT_ROOT = Path(
     "/Users/elliotbroth/Data/EEG_Reconstruction_Data/DSI-24.Sourcedata"
 )
+## NOTE TO USER: you will need to change the input and output path, but you would not manually write this in \
+# the script, intead you will use command line arguments  
 DEFAULT_OUTPUT_ROOT = Path(
     "/Users/elliotbroth/Data/EEG_Reconstruction_Data/DSI-7.Artificial"
 )
 
-
+#this creates command line arguments for us to call 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    #This is where you would change the output and input path using a command line argument!
+    #E.g. for calling the script with your path: python synthesize_dsi7.py --input-root "/Users/elliotbroth/Desktop/projectfolder" --output-root "/Users/elliotbroth/Desktop/folder"
     parser.add_argument("--input-root", type=Path, default=DEFAULT_INPUT_ROOT)
     parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
+    #this limits how many EDF files are processed. this will be useful for testing this \
+    #script but of course when we run it we will want to process all the edf files
     parser.add_argument("--limit", type=int)
+    #this allows existing files to be skipped or overwritten. If you set it to true, past file will be overwritten \
+    # but if you set it to false, the past output files (with the same name) will be skipped, this automatically assumed --overwrite False
+    #when you call this False and True must be capitalized, as they are booleans!!!
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()
 
-
+#this function cleans the EEG channel names. Channel names can vary a lot from dataset to dataset, this removes all titles, except the basic channel letter and number (e.g. F3)
 def electrode_name(channel_label: str) -> str:
     cleaned = re.sub(r"^EEG[ .:_-]*", "", channel_label.strip(), flags=re.IGNORECASE)
     cleaned = re.split(r"[-/]", cleaned, maxsplit=1)[0]
@@ -72,7 +84,7 @@ def verify_saved_file(path: Path, expected: mne.io.BaseRaw) -> None:
         raise RuntimeError(
             f"Saved sampling rate differs: {saved.info['sfreq']} != "
             f"{expected.info['sfreq']}"
-        )
+        ) 
 
 
 def synthesize_recording(

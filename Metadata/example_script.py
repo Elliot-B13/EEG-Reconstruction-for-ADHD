@@ -1,5 +1,5 @@
 import mne
-
+ 
 # Path to the EDF file
 edf_path = "/sub-01_task-BT_acq-BLP_eeg.edf"
 

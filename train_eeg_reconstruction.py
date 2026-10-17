@@ -907,7 +907,7 @@ def main() -> None:
                 "learning_rate": float(current_lr),
             }
         )
-        print(
+        print( 
             f"Epoch {epoch:03d} | "
             f"train MSE={train_loss:.6f} | "
             f"val MSE={validation_loss:.6f} | "
